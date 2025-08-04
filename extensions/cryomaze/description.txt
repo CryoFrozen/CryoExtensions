@@ -1,0 +1,1 @@
+Create mazes with this extension.

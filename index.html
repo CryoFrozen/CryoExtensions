@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Download GitHub Extensions</title>
+<style>
+  body {
+    margin: 0;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    gap: 15px;
+    font-family: Arial, sans-serif;
+  }
+  button {
+    background-color: white;
+    color: black;
+    border: none;
+    padding: 15px 30px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #e0e0e0;
+  }
+</style>
+</head>
+<body>
+
+<script>
+  const owner = "CryoFrozen";  // Replace with GitHub username/org
+  const repo = "CryoExtensions";       // Replace with repo name
+  const folderPath = "extensions"; // Folder path in repo
+
+  async function loadExtensions() {
+    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${folderPath}`;
+    
+    try {
+      const response = await fetch(apiUrl);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+      const files = await response.json();
+      files.forEach(file => {
+        if (file.type === "file") {
+          const btn = document.createElement("button");
+          btn.textContent = `Download ${file.name}`;
+          btn.onclick = () => {
+            const link = document.createElement('a');
+            link.href = file.download_url; // Direct file download URL
+            link.download = file.name;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          };
+          document.body.appendChild(btn);
+        }
+      });
+    } catch (err) {
+      console.error("Failed to load extensions:", err);
+      const errMsg = document.createElement("p");
+      errMsg.textContent = "Failed to load extensions. See console for details.";
+      errMsg.style.color = "white";
+      document.body.appendChild(errMsg);
+    }
+  }
+
+  loadExtensions();
+</script>
+
+</body>
+</html>
