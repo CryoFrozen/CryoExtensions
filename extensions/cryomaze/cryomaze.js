@@ -2,7 +2,7 @@
   'use strict';
 
   if (!Scratch.extensions.unsandboxed) {
-      throw new Error('This Turbo Mode example must run unsandboxed');
+      throw new Error('This extension must run unsandboxed');
     }
     const vm = Scratch.vm;
 

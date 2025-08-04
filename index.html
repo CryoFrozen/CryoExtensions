@@ -1,335 +1,337 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>GitHub Extensions Gallery</title>
-<style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    background-color: black;
-    color: white;
-    font-family: Arial, sans-serif;
-    overflow: hidden; /* hide body scrollbar */
-  }
-  body {
-    display: flex;
-    flex-direction: column;
-  }
-  header {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 12px 60px 12px 60px;
-    border-bottom: 1px solid #444;
-    background-color: #111;
-  }
-  #searchBar {
-    width: 300px;
-    padding: 8px 12px;
-    font-size: 16px;
-    border-radius: 6px;
-    border: none;
-  }
-  #searchBar:focus {
-    outline: none;
-    box-shadow: 0 0 5px white;
-  }
-  #settingsBtn {
-    position: absolute;
-    right: 15px;
-    top: 12px;
-    background-color: white;
-    color: black;
-    border: none;
-    padding: 8px 14px;
-    font-size: 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    user-select: none;
-  }
-  #settingsBtn:hover {
-    background-color: #e0e0e0;
-  }
-  #settingsPanel {
-    position: fixed;
-    top: 50px;
-    right: 15px;
-    background-color: #222;
-    border: 1px solid #555;
-    border-radius: 8px;
-    padding: 15px 20px;
-    display: none;
-    z-index: 100;
-    width: 220px;
-    color: white;
-  }
-  #settingsPanel label {
-    display: block;
-    margin-bottom: 8px;
-    cursor: pointer;
-  }
-  main {
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-  }
-  .extension-card {
-    background-color: #222;
-    border-radius: 8px;
-    width: 280px;
-    padding: 15px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .thumbnail {
-    width: 100%;
-    height: 160px;
-    object-fit: contain;
-    border-radius: 6px;
-    background-color: #111;
-    margin-bottom: 12px;
-  }
-  .description {
-    font-size: 14px;
-    margin-bottom: 12px;
-    white-space: pre-wrap;
-    min-height: 80px;
-    text-align: center;
-  }
-  button.action-btn {
-    background-color: white;
-    color: black;
-    border: none;
-    padding: 12px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    width: 100%;
-    transition: background-color 0.3s ease;
-  }
-  button.action-btn:hover {
-    background-color: #e0e0e0;
-  }
-  .hidden {
-    display: none;
-  }
-  /* Scrollbar styles */
-  main::-webkit-scrollbar {
-    width: 10px;
-  }
-  main::-webkit-scrollbar-track {
-    background: #111;
-  }
-  main::-webkit-scrollbar-thumb {
-    background-color: #444;
-    border-radius: 10px;
-    border: 2px solid #111;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GitHub Extensions Gallery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+      color: white;
+      font-family: 'Roboto', sans-serif;
+      overflow: hidden;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px 60px;
+      border-bottom: 1px solid #444;
+      background-color: #111;
+    }
+    #searchBar {
+      width: 350px;
+      padding: 10px 15px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      background: #333;
+      color: white;
+    }
+    #searchBar:focus {
+      outline: none;
+      box-shadow: 0 0 5px #00aaff;
+    }
+    #settingsBtn {
+      position: absolute;
+      right: 15px;
+      top: 15px;
+      background-color: #00aaff;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #settingsBtn:hover {
+      background-color: #0088cc;
+    }
+    #settingsPanel {
+      position: fixed;
+      top: 50px;
+      right: 15px;
+      background-color: #222;
+      border: 1px solid #555;
+      border-radius: 8px;
+      padding: 15px 20px;
+      display: none;
+      z-index: 100;
+      width: 220px;
+      color: white;
+    }
+    #settingsPanel label {
+      display: block;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+    main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .extension-card {
+      background-color: #222;
+      border-radius: 12px;
+      width: 280px;
+      padding: 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    .thumbnail {
+      width: 100%;
+      height: 160px;
+      object-fit: contain;
+      border-radius: 6px;
+      background-color: #111;
+      margin-bottom: 15px;
+    }
+    .description {
+      font-size: 15px;
+      margin-bottom: 15px;
+      white-space: pre-wrap;
+      min-height: 80px;
+      text-align: center;
+      color: #ccc;
+    }
+    button.action-btn {
+      background: linear-gradient(90deg, #00aaff, #0088cc);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      width: 100%;
+      transition: transform 0.2s ease;
+    }
+    button.action-btn:hover {
+      transform: scale(1.05);
+    }
+    button.action-btn:disabled {
+      background: #666;
+      cursor: not-allowed;
+    }
+    .hidden {
+      display: none;
+    }
+    /* Scrollbar styles */
+    main::-webkit-scrollbar {
+      width: 10px;
+    }
+    main::-webkit-scrollbar-track {
+      background: #111;
+    }
+    main::-webkit-scrollbar-thumb {
+      background-color: #444;
+      border-radius: 10px;
+      border: 2px solid #111;
+    }
+  </style>
 </head>
 <body>
+  <header>
+    <input type="search" id="searchBar" placeholder="Search extensions..." />
+    <button id="settingsBtn" title="Settings ⚙️">⚙️</button>
+    <div id="settingsPanel">
+      <strong>Get extension by:</strong>
+      <label><input type="radio" name="getMethod" value="download" checked /> Download</label>
+      <label><input type="radio" name="getMethod" value="copyContent" /> Copy JS Content</label>
+      <label><input type="radio" name="getMethod" value="copyUrl" /> Copy URL</label>
+    </div>
+  </header>
+  <main id="extensionsContainer">
+    <!-- Extension cards will be injected here -->
+  </main>
+  <script>
+    const owner = "CryoFrozen";  // Replace with your GitHub username/org
+    const repo = "CryoExtensions";       // Replace with your GitHub repo name
+    const folderPath = "extensions";  // Root folder containing extension folders
 
-<header>
-  <input type="search" id="searchBar" placeholder="Search extensions..." />
-  <button id="settingsBtn" title="Settings ⚙️">⚙️</button>
-  <div id="settingsPanel">
-    <strong>Get extension by:</strong>
-    <label><input type="radio" name="getMethod" value="download" checked /> Download</label>
-    <label><input type="radio" name="getMethod" value="copyContent" /> Copy JS Content</label>
-    <label><input type="radio" name="getMethod" value="copyUrl" /> Copy URL</label>
-  </div>
-</header>
+    const extensionsContainer = document.getElementById('extensionsContainer');
+    const settingsBtn = document.getElementById('settingsBtn');
+    const settingsPanel = document.getElementById('settingsPanel');
+    const searchBar = document.getElementById('searchBar');
 
-<main id="extensionsContainer">
-  <!-- Extension cards will be injected here -->
-</main>
+    let extensionsData = []; // To hold loaded extensions info
+    let getMethod = 'download'; // default method
 
-<script>
-  const owner = "CryoFrozen";  // Replace with your GitHub username/org
-  const repo = "CryoExtensions";       // Replace with your GitHub repo name
-  const folderPath = "extensions";  // Root folder containing extension folders
+    // Toggle settings panel visibility
+    settingsBtn.addEventListener('click', () => {
+      settingsPanel.style.display = settingsPanel.style.display === 'block' ? 'none' : 'block';
+    });
 
-  const extensionsContainer = document.getElementById('extensionsContainer');
-  const settingsBtn = document.getElementById('settingsBtn');
-  const settingsPanel = document.getElementById('settingsPanel');
-  const searchBar = document.getElementById('searchBar');
+    // Close settings panel if clicked outside
+    window.addEventListener('click', e => {
+      if (!settingsPanel.contains(e.target) && e.target !== settingsBtn) {
+        settingsPanel.style.display = 'none';
+      }
+    });
 
-  let extensionsData = []; // To hold loaded extensions info
-  let getMethod = 'download'; // default method
+    // Handle settings radio changes
+    settingsPanel.querySelectorAll('input[name="getMethod"]').forEach(radio => {
+      radio.addEventListener('change', e => {
+        getMethod = e.target.value;
+        renderExtensions(extensionsData);
+      });
+    });
 
-  // Toggle settings panel visibility
-  settingsBtn.addEventListener('click', () => {
-    settingsPanel.style.display = settingsPanel.style.display === 'block' ? 'none' : 'block';
-  });
-
-  // Close settings panel if clicked outside
-  window.addEventListener('click', e => {
-    if (!settingsPanel.contains(e.target) && e.target !== settingsBtn) {
-      settingsPanel.style.display = 'none';
+    // Utility fetch helpers
+    async function fetchJson(url) {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+      return res.json();
     }
-  });
 
-  // Handle settings radio changes
-  settingsPanel.querySelectorAll('input[name="getMethod"]').forEach(radio => {
-    radio.addEventListener('change', e => {
-      getMethod = e.target.value;
+    async function fetchText(url) {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+      return res.text();
+    }
+
+    // Load all extensions
+    async function loadExtensions() {
+      const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${folderPath}`;
+      try {
+        const folders = await fetchJson(apiUrl);
+        const extensionFolders = folders.filter(item => item.type === "dir");
+
+        const loadedExtensions = [];
+
+        for (const folder of extensionFolders) {
+          const folderContents = await fetchJson(folder.url);
+
+          const jsFile = folderContents.find(f => f.name.endsWith(".js"));
+          const txtFile = folderContents.find(f => f.name.endsWith(".txt"));
+          const thumbFile = folderContents.find(f => f.name.toLowerCase() === "thumbnail.png");
+
+          let description = "No description available.";
+          if (txtFile) {
+            try {
+              description = await fetchText(txtFile.download_url);
+            } catch {}
+          }
+
+          let jsContent = null;
+          if (jsFile) {
+            try {
+              jsContent = await fetchText(jsFile.download_url);
+            } catch {}
+          }
+
+          loadedExtensions.push({
+            folderName: folder.name,
+            description,
+            thumbnailUrl: thumbFile ? thumbFile.download_url : null,
+            jsFileUrl: jsFile ? jsFile.download_url : null,
+            jsFileName: jsFile ? jsFile.name : null,
+            jsContent
+          });
+        }
+
+        extensionsData = loadedExtensions;
+        renderExtensions(extensionsData);
+
+      } catch (error) {
+        console.error("Error loading extensions:", error);
+        extensionsContainer.innerHTML = `<p style="color:red;">Failed to load extensions: ${error.message}</p>`;
+      }
+    }
+
+    // Render filtered extensions
+    function renderExtensions(data) {
+      const searchTerm = searchBar.value.trim().toLowerCase();
+
+      extensionsContainer.innerHTML = '';
+
+      const filtered = data.filter(ext => 
+        ext.folderName.toLowerCase().includes(searchTerm) ||
+        ext.description.toLowerCase().includes(searchTerm)
+      );
+
+      if (filtered.length === 0) {
+        extensionsContainer.innerHTML = `<p>No extensions found.</p>`;
+        return;
+      }
+
+      filtered.forEach(ext => {
+        const card = document.createElement('div');
+        card.className = 'extension-card';
+
+        if (ext.thumbnailUrl) {
+          const img = document.createElement('img');
+          img.className = 'thumbnail';
+          img.src = ext.thumbnailUrl;
+          img.alt = `${ext.folderName} thumbnail`;
+          card.appendChild(img);
+        }
+
+        const desc = document.createElement('div');
+        desc.className = 'description';
+        desc.textContent = ext.description;
+        card.appendChild(desc);
+
+        const btn = document.createElement('button');
+        btn.className = 'action-btn';
+        btn.textContent = ext.jsFileName ? `Get ${ext.jsFileName}` : 'No JS File';
+
+        if (!ext.jsFileUrl) {
+          btn.disabled = true;
+        } else {
+          btn.addEventListener('click', async () => {
+            try {
+              if (getMethod === 'download') {
+                const link = document.createElement('a');
+                link.href = ext.jsFileUrl;
+                link.download = ext.jsFileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+              } else if (getMethod === 'copyContent') {
+                if (ext.jsContent) {
+                  await navigator.clipboard.writeText(ext.jsContent);
+                  alert(`JS content from ${ext.jsFileName} copied to clipboard!`);
+                } else {
+                  alert('JS content not available to copy.');
+                }
+              } else if (getMethod === 'copyUrl') {
+                window.open(ext.jsFileUrl, '_blank');
+              }
+            } catch (err) {
+              alert(`Error: ${err.message}`);
+            }
+          });
+        }
+
+        card.appendChild(btn);
+        extensionsContainer.appendChild(card);
+      });
+    }
+
+    searchBar.addEventListener('input', () => {
       renderExtensions(extensionsData);
     });
-  });
 
-  // Utility fetch helpers
-  async function fetchJson(url) {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-    return res.json();
-  }
-
-  async function fetchText(url) {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-    return res.text();
-  }
-
-  // Load all extensions
-  async function loadExtensions() {
-    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${folderPath}`;
-    try {
-      const folders = await fetchJson(apiUrl);
-      const extensionFolders = folders.filter(item => item.type === "dir");
-
-      const loadedExtensions = [];
-
-      for (const folder of extensionFolders) {
-        const folderContents = await fetchJson(folder.url);
-
-        const jsFile = folderContents.find(f => f.name.endsWith(".js"));
-        const txtFile = folderContents.find(f => f.name.endsWith(".txt"));
-        const thumbFile = folderContents.find(f => f.name.toLowerCase() === "thumbnail.png");
-
-        let description = "No description available.";
-        if (txtFile) {
-          try {
-            description = await fetchText(txtFile.download_url);
-          } catch {}
-        }
-
-        let jsContent = null;
-        if (jsFile) {
-          try {
-            jsContent = await fetchText(jsFile.download_url);
-          } catch {}
-        }
-
-        loadedExtensions.push({
-          folderName: folder.name,
-          description,
-          thumbnailUrl: thumbFile ? thumbFile.download_url : null,
-          jsFileUrl: jsFile ? jsFile.download_url : null,
-          jsFileName: jsFile ? jsFile.name : null,
-          jsContent
-        });
-      }
-
-      extensionsData = loadedExtensions;
-      renderExtensions(extensionsData);
-
-    } catch (error) {
-      console.error("Error loading extensions:", error);
-      extensionsContainer.innerHTML = `<p style="color:red;">Failed to load extensions: ${error.message}</p>`;
-    }
-  }
-
-  // Render filtered extensions
-  function renderExtensions(data) {
-    const searchTerm = searchBar.value.trim().toLowerCase();
-
-    extensionsContainer.innerHTML = '';
-
-    const filtered = data.filter(ext => 
-      ext.folderName.toLowerCase().includes(searchTerm) ||
-      ext.description.toLowerCase().includes(searchTerm)
-    );
-
-    if (filtered.length === 0) {
-      extensionsContainer.innerHTML = `<p>No extensions found.</p>`;
-      return;
-    }
-
-    filtered.forEach(ext => {
-      const card = document.createElement('div');
-      card.className = 'extension-card';
-
-      if (ext.thumbnailUrl) {
-        const img = document.createElement('img');
-        img.className = 'thumbnail';
-        img.src = ext.thumbnailUrl;
-        img.alt = `${ext.folderName} thumbnail`;
-        card.appendChild(img);
-      }
-
-      const desc = document.createElement('div');
-      desc.className = 'description';
-      desc.textContent = ext.description;
-      card.appendChild(desc);
-
-      const btn = document.createElement('button');
-      btn.className = 'action-btn';
-      btn.textContent = ext.jsFileName ? `Get ${ext.jsFileName}` : 'No JS File';
-
-      if (!ext.jsFileUrl) {
-        btn.disabled = true;
-      } else {
-    btn.addEventListener('click', async () => {
-        try {
-            if (getMethod === 'download') {
-            // Trigger download
-            const link = document.createElement('a');
-            link.href = ext.jsFileUrl;
-            link.download = ext.jsFileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            } else if (getMethod === 'copyContent') {
-            if (ext.jsContent) {
-                await navigator.clipboard.writeText(ext.jsContent);
-                alert(`JS content from ${ext.jsFileName} copied to clipboard!`);
-            } else {
-                alert('JS content not available to copy.');
-            }
-
-            } else if (getMethod === 'copyUrl') {
-            // OPEN the URL in new tab instead of copying
-            window.open(ext.jsFileUrl, '_blank');
-            }
-        }         catch (err) {
-            alert(`Error: ${err.message}`);
-        }
-        });
-      }
-
-      card.appendChild(btn);
-      extensionsContainer.appendChild(card);
-    });
-  }
-
-  searchBar.addEventListener('input', () => {
-    renderExtensions(extensionsData);
-  });
-
-  // Load on page start
-  loadExtensions();
-</script>
-
+    // Load on page start
+    loadExtensions();
+  </script>
 </body>
 </html>
