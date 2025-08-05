@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Cryo Extensions</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/png" href="Icon.png">
+  <link rel="icon" type="image/png" href="Icon.png" onerror="console.log('Favicon load failed')">
   <style>
     html, body {
       margin: 0;
@@ -36,6 +36,9 @@
     }
     #logo:hover {
       transform: scale(1.1);
+    }
+    #logo[src=""] {
+      display: none; /* Hide if src is empty due to load failure */
     }
     #searchBar {
       width: 350px;
@@ -174,7 +177,7 @@
 </head>
 <body>
   <header>
-    <img id="logo" src="Icon.png" alt="Gallery Logo">
+    <img id="logo" src="Icon.png" alt="Gallery Logo" onerror="console.log('Logo image load failed')">
     <input type="search" id="searchBar" placeholder="Search extensions..." />
     <button id="settingsBtn" title="Settings ⚙️">⚙️</button>
     <div id="settingsPanel">
@@ -322,7 +325,7 @@
         const btn = document.createElement('button');
         btn.className = 'action-btn';
         btn.textContent = ext.jsFileName ? `Get ${ext.jsFileName}` : 'No JS File';
-        btn.setAttribute('aria-label', 'Get extension file'); // Correctly added as an HTML attribute
+        btn.setAttribute('aria-label', 'Get extension file');
 
         if (!ext.jsFileUrl) {
           btn.disabled = true;
