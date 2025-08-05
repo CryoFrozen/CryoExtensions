@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Cryo Extensions</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/png" href="Icon.png" onerror="console.log('Favicon load failed')">
   <style>
     html, body {
       margin: 0;
@@ -38,7 +37,7 @@
       transform: scale(1.1);
     }
     #logo[src=""] {
-      display: none; /* Hide if src is empty due to load failure */
+      display: none;
     }
     #searchBar {
       width: 350px;
@@ -177,7 +176,7 @@
 </head>
 <body>
   <header>
-    <img id="logo" src="Icon.png" alt="Gallery Logo" onerror="console.log('Logo image load failed')">
+    <img id="logo" src="" alt="Gallery Logo" onerror="console.log('Logo image load failed')">
     <input type="search" id="searchBar" placeholder="Search extensions..." />
     <button id="settingsBtn" title="Settings ⚙️">⚙️</button>
     <div id="settingsPanel">
@@ -200,9 +199,37 @@
     const settingsPanel = document.getElementById('settingsPanel');
     const searchBar = document.getElementById('searchBar');
     const spinner = document.querySelector('.spinner');
+    const logo = document.getElementById('logo');
 
     let extensionsData = []; // To hold loaded extensions info
     let getMethod = 'download'; // default method
+    let iconUrl = ''; // To store the icon URL from GitHub
+
+    // Fetch icon from GitHub repository root
+    async function fetchIcon() {
+      try {
+        const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/`;
+        const response = await fetchJson(apiUrl);
+        const iconFile = response.find(file => file.name.toLowerCase() === "icon.png");
+        if (iconFile) {
+          iconUrl = iconFile.download_url;
+          logo.src = iconUrl; // Set logo image source
+          const link = document.querySelector('link[rel="icon"]');
+          if (link) link.href = iconUrl; // Set favicon source
+          console.log('Icon loaded from:', iconUrl);
+        } else {
+          console.log('Icon.png not found in repository root');
+          logo.src = 'https://via.placeholder.com/40'; // Fallback placeholder
+          const link = document.querySelector('link[rel="icon"]');
+          if (link) link.href = 'https://via.placeholder.com/40';
+        }
+      } catch (error) {
+        console.error('Error fetching icon:', error);
+        logo.src = 'https://via.placeholder.com/40'; // Fallback placeholder
+        const link = document.querySelector('link[rel="icon"]');
+        if (link) link.href = 'https://via.placeholder.com/40';
+      }
+    }
 
     // Toggle settings panel visibility
     settingsBtn.addEventListener('click', () => {
@@ -226,8 +253,12 @@
 
     // Utility fetch helpers
     async function fetchJson(url) {
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+      const res = await fetch(url, {
+        headers: {
+          'Accept': 'application/vnd.github.v3+json'
+        }
+      });
+      if (!res.ok) throw new Error(`HTTP error ${res.status}: ${await res.text()}`);
       return res.json();
     }
 
@@ -242,12 +273,14 @@
       spinner.classList.remove('hidden');
       const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${folderPath}`;
       try {
+        console.log('Fetching extensions from:', apiUrl);
         const folders = await fetchJson(apiUrl);
         const extensionFolders = folders.filter(item => item.type === "dir");
 
         const loadedExtensions = [];
 
         for (const folder of extensionFolders) {
+          console.log('Processing folder:', folder.name);
           const folderContents = await fetchJson(folder.url);
 
           const jsFile = folderContents.find(f => f.name.endsWith(".js"));
@@ -258,14 +291,18 @@
           if (txtFile) {
             try {
               description = await fetchText(txtFile.download_url);
-            } catch {}
+            } catch (err) {
+              console.warn(`Failed to fetch description for ${folder.name}:`, err);
+            }
           }
 
           let jsContent = null;
           if (jsFile) {
             try {
               jsContent = await fetchText(jsFile.download_url);
-            } catch {}
+            } catch (err) {
+              console.warn(`Failed to fetch JS content for ${folder.name}:`, err);
+            }
           }
 
           loadedExtensions.push({
@@ -280,6 +317,7 @@
 
         extensionsData = loadedExtensions;
         renderExtensions(extensionsData);
+        console.log('Extensions loaded:', extensionsData.length);
 
       } catch (error) {
         console.error("Error loading extensions:", error);
@@ -368,8 +406,11 @@
       renderExtensions(extensionsData);
     });
 
-    // Load on page start
-    loadExtensions();
+    // Load icon and extensions on page start
+    (async () => {
+      await fetchIcon();
+      await loadExtensions();
+    })();
   </script>
 </body>
 </html>
