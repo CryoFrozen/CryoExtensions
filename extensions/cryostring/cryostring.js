@@ -17,7 +17,7 @@
         id: 'frostedstring',
         name: 'CryoStrings',
         color1: '#0291aaff',
-        color2: '#b5b5b5ff',
+        color2: '#61d0ffff',
         color3: '#4bbdffff',
         menuIconURI: blocksIcon,
         blockIconURI: dangoIcon,
@@ -118,6 +118,22 @@
               }
             }
           },
+           {
+            opcode: 'amountchar',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'amount of [char] in [text]',
+            disableMoniter: true,
+            arguments: {
+              char: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'a'
+              },
+              text: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'banana'
+              }
+            }
+          },
           '---',
           {
             opcode: 'startprefix',
@@ -141,8 +157,37 @@
             blockType: Scratch.BlockType.REPORTER,
             text: 'newline character',
             disableMoniter: true
+          },
+          {
+            opcode: 'upperlower',
+            blockType: Scratch.BlockType.REPORTER,
+            text: '[style] [text]',
+            disableMoniter: true,
+            arguments: {
+              style: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'capitalmenu',
+                defaultValue: 'capitalize first letter'
+              },
+              text: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'apple'
+              }
+            }
           }
-        ]
+        ],
+        menus: {
+          capitalmenu: {
+            acceptReporters: true,
+            items: [
+              'capitalize first letter',
+              'capitalize all',
+              'lowercase all',
+              'lowercase first letter'
+            ]
+          }
+        }
+
       };
     }
 
@@ -189,7 +234,7 @@
     joinitem(args) {
       let parsed;
       try {
-        parsed = JSON.parse(args.text); // Convert string into actual array
+        parsed = JSON.parse(args.text);
       } catch {
         return 'Invalid array';
       }
@@ -199,10 +244,40 @@
       return parsed.join(args.seperator);
     }
 
+    amountchar(args) {
+      let number = 0
+      let text = args.text
+      let txt = "";
+      let x;
+      for (x in text) {
+        txt = text[x];
+        if (txt == args.char) {
+          number += 1;
+        }
+      }
+      return number;
+    }
 
     newline() {
       return "\n";
     }
+
+    upperlower(args) {
+      let text = String(args.text);
+      switch (args.style) {
+        case 'capitalize first letter':
+          return text.charAt(0).toUpperCase() + text.slice(1);
+        case 'capitalize all':
+          return text.toUpperCase();
+        case 'lowercase all':
+          return text.toLowerCase();
+        case 'lowercase first letter':
+          return text.charAt(0).toLowerCase() + text.slice(1);
+        default:
+          return text;
+      }
+    }
+
   }
   Scratch.extensions.register(new FrostedStrings());
 })(Scratch)
