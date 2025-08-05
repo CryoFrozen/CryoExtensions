@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GitHub Extensions Gallery</title>
+  <title>Cryo Extensions</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="Icon.png">
   <style>
     html, body {
       margin: 0;
@@ -22,11 +23,19 @@
     header {
       position: relative;
       display: flex;
-      justify-content: center;
       align-items: center;
       padding: 15px 60px;
       border-bottom: 1px solid #444;
       background-color: #111;
+    }
+    #logo {
+      width: 40px;
+      height: 40px;
+      margin-right: 20px;
+      transition: transform 0.3s ease;
+    }
+    #logo:hover {
+      transform: scale(1.1);
     }
     #searchBar {
       width: 350px;
@@ -71,7 +80,7 @@
     }
     #settingsPanel label {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       cursor: pointer;
     }
     main {
@@ -95,6 +104,10 @@
       flex-direction: column;
       align-items: center;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s ease;
+    }
+    .extension-card:hover {
+      transform: translateY(-5px);
     }
     .thumbnail {
       width: 100%;
@@ -133,7 +146,19 @@
     .hidden {
       display: none;
     }
-    /* Scrollbar styles */
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #00aaff;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
     main::-webkit-scrollbar {
       width: 10px;
     }
@@ -149,6 +174,7 @@
 </head>
 <body>
   <header>
+    <img id="logo" src="Icon.png" alt="Gallery Logo">
     <input type="search" id="searchBar" placeholder="Search extensions..." />
     <button id="settingsBtn" title="Settings ⚙️">⚙️</button>
     <div id="settingsPanel">
@@ -159,7 +185,7 @@
     </div>
   </header>
   <main id="extensionsContainer">
-    <!-- Extension cards will be injected here -->
+    <div class="spinner"></div>
   </main>
   <script>
     const owner = "CryoFrozen";  // Replace with your GitHub username/org
@@ -170,6 +196,7 @@
     const settingsBtn = document.getElementById('settingsBtn');
     const settingsPanel = document.getElementById('settingsPanel');
     const searchBar = document.getElementById('searchBar');
+    const spinner = document.querySelector('.spinner');
 
     let extensionsData = []; // To hold loaded extensions info
     let getMethod = 'download'; // default method
@@ -209,6 +236,7 @@
 
     // Load all extensions
     async function loadExtensions() {
+      spinner.classList.remove('hidden');
       const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${folderPath}`;
       try {
         const folders = await fetchJson(apiUrl);
@@ -253,6 +281,8 @@
       } catch (error) {
         console.error("Error loading extensions:", error);
         extensionsContainer.innerHTML = `<p style="color:red;">Failed to load extensions: ${error.message}</p>`;
+      } finally {
+        spinner.classList.add('hidden');
       }
     }
 
@@ -292,6 +322,7 @@
         const btn = document.createElement('button');
         btn.className = 'action-btn';
         btn.textContent = ext.jsFileName ? `Get ${ext.jsFileName}` : 'No JS File';
+        btn.setAttribute('aria-label', 'Get extension file'); // Correctly added as an HTML attribute
 
         if (!ext.jsFileUrl) {
           btn.disabled = true;
@@ -299,12 +330,16 @@
           btn.addEventListener('click', async () => {
             try {
               if (getMethod === 'download') {
-                const link = document.createElement('a');
-                link.href = ext.jsFileUrl;
-                link.download = ext.jsFileName;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+                const response = await fetch(ext.jsFileUrl);
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = ext.jsFileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
               } else if (getMethod === 'copyContent') {
                 if (ext.jsContent) {
                   await navigator.clipboard.writeText(ext.jsContent);
